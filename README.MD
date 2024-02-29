@@ -1,7 +1,9 @@
 # Python Telegram Scraping
 This module scrapes the data from selected telegram channels or chats using Telethon library. It also includes simple functions for counting words and visualizing their distribution.
-## How to get
+## How to use
 ```
+git clone https://github.com/MelnychenkoM/tgscraper.git
+cd tgscraper
 pip install -r requirements.txt
 ```
 You can get your api_id and api_hash here: https://my.telegram.org/apps. \
@@ -20,6 +22,6 @@ key_search: str = "search_word" # Your key word or None
 output_filename = 'result.xlsx' # None or filename.xlsx
 forward_message: bool = False # If true it will save all of the messages in "saved messages" in telegram
 ```
-# Word of caution
+## Word of caution
 **This Telegram scraper is provided for educational and research purposes only.** \
 **The developer does not endorse or support any misuse of this tool.**
