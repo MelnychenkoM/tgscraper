@@ -8,26 +8,28 @@ import pandas as pd
 # =================== PARAMETERS =========================
 
 username: str = "@username"                                   
-api_id: int = 00000
-api_hash: str = 'api_hash'
+api_id: int = 43243234
+api_hash: str = 'api hash'
 
-y_max, m_max, d_max = (2024, 3, 1) # maximum date --> year/month/day
-y_min, m_min, d_min = (2021, 1, 27)   # minimum date --> year/month/day
+y_min, m_min, d_min = (2022, 1, 27)   # from date --> year/month/day
+y_max, m_max, d_max = (2024, 3, 1) # to date --> year/month/day
 
-chat_url: str = "chat url" 
-key_search: str = "search_word"
+chat_url: str = 342432424 # String with url or int id
+key_search: str = "word" # Search with a key or None
 
 # --------------------------------------------------------
 
-output_filename = 'result.xlsx' # None or example.xlsx
+output_filename = 'example.xlsx' # None or example.xlsx
 forward_message: bool = False
+get_chats = False # Creates an excel spreadsheet with all your groups
 
 # ========================================================
 
 def find_key_in_chat(chat_url: str, key_search: str, send_message: bool = False):
     
     """ Find messages containing key word. """
-    index = 0
+
+    match = 0
     messages_id = []
     messages_date = []
     messages = []
@@ -39,13 +41,8 @@ def find_key_in_chat(chat_url: str, key_search: str, send_message: bool = False)
     phone_numbers = []
 
     with TelegramClient(username, api_id, api_hash) as client:
-
-        match = 0
-
-        for message in client.iter_messages(chat_url, key_search):
-
+        for message in client.iter_messages(chat_url, search=key_search):
             chat_id = str(message.chat_id)[4:]
-
             if message.date < datetime(y_max, m_max, d_max, tzinfo=timezone.utc) and message.date > datetime(y_min, m_min, d_min, tzinfo=timezone.utc):
 
                 match += 1
@@ -65,7 +62,6 @@ def find_key_in_chat(chat_url: str, key_search: str, send_message: bool = False)
                     sender_first_name = user.first_name if user.first_name else "None"
                     sender_last_name = user.last_name if user.last_name else "None"
                     phone = user.phone if user.phone else "None"
-
                 else:
                     sender_username = 'None'
                     sender_first_name = 'None'
@@ -100,13 +96,36 @@ def find_key_in_chat(chat_url: str, key_search: str, send_message: bool = False)
 
     return df
 
+def get_participants(chat_url: str, key_search: str):
+    pass
+
+def get_all_groups(output_filename='chats.xlsx'):
+
+    chat_names = []
+    chat_ids = []
+
+    with TelegramClient(username, api_id, api_hash) as client:
+        for dialog in client.iter_dialogs():
+            if dialog.is_group:
+                chat_names.append(dialog.name)
+                chat_ids.append(str(dialog.id))
+        
+    df = pd.DataFrame({
+        "Chat name": chat_names,
+        "Chat id": chat_ids
+    }).to_excel(output_filename, index=None)
+
 
 def save_to_excel(df: pd.DataFrame, filename: str):
     df['Date'] = df['Date'].dt.tz_convert(None)
     df.to_excel(filename, index=False)
 
+
 if __name__ == '__main__':
     df = find_key_in_chat(chat_url, key_search, forward_message)
+
+    if get_chats:
+        get_all_groups()
 
     if output_filename is not None:
         save_to_excel(df, output_filename)
