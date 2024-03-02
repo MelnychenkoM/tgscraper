@@ -9,19 +9,26 @@ pip install -r requirements.txt
 You can get your api_id and api_hash here: https://my.telegram.org/apps. \
 Set the necessary parameters:
 ```
+from tgscraper import TgScraper
+
 username: str = "@username"                                   
-api_id: int = 00000
+api_id: int = 34534535345
 api_hash: str = 'api_hash'
 
-y_min, m_min, d_min = (2021, 1, 27)   # from date --> year/month/day
-y_max, m_max, d_max = (2024, 3, 1) # to date (excluding) --> year/month/day
- 
-chat_url: str = "chat url" # String with chat url or int chat id
-key_search: str = "search_word" # Your keyword or None
 
-output_filename = 'result.xlsx' # None or filename.xlsx
-forward_message: bool = False # If true, it will save all of the messages in the 'Saved Messages' section inside the Telegram app.
-get_chats = False # Creates an excel spreadsheet with all your groups
+scraper = TgScraper(username, api_id, api_hash)
+# You can get all your chats and their corresponding ids using get_all_groups method
+scraper.get_all_groups(save_in_excel=True) 
+# Find all messsages in the chat containing the key word
+scraper.scrape_messages(chat_id, 
+                        "car", 
+                        date_from="2024/01/01", 
+                        date_to="2024/03/02", 
+                        save_in_exel=True
+                        )
+
+
+scraper.get_participants(chat_id, save_in_excel=True)
 ```
 ## Word of caution
 **This Telegram scraper is provided for educational and research purposes only.** \
