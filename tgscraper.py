@@ -15,7 +15,7 @@ class TgScraper:
                         send_message: bool = False, 
                         date_from=None, # "year/month/day"
                         date_to=None, # "year/month/day"
-                        save_in_exel=False,
+                        save_to_excel=False,
                         output_filename="scraped_messages.xlsx"):
         
         messages_data = []
@@ -52,13 +52,13 @@ class TgScraper:
 
         df = pd.DataFrame(messages_data)
 
-        if save_in_exel:
+        if save_to_excel:
             df['Message Date'] = df['Message Date'].dt.tz_convert(None)
             df.to_excel(output_filename)
 
         return df
     
-    def get_all_groups(self, save_in_excel=False,
+    def get_all_groups(self, save_to_excel=False,
                        output_filename='all_groups.xlsx') -> pd.DataFrame:
 
         chat_names = []
@@ -75,7 +75,7 @@ class TgScraper:
             "Chat id": chat_ids
         })
 
-        if save_in_excel:
+        if save_to_excel:
             df.to_excel(output_filename)
 
         header = "GETTING ALL CHATS"
@@ -85,7 +85,7 @@ class TgScraper:
         return df
     
     def get_participants(self, chat_url: str,
-                         save_in_excel=False,
+                         save_to_excel=False,
                          output_filename='participants.xlsx') -> pd.DataFrame:
 
         user_list = []
@@ -109,7 +109,7 @@ class TgScraper:
             })
 
         df = pd.DataFrame(user_list)
-        if save_in_excel:
+        if save_to_excel:
             df.to_excel(output_filename)
 
         header = "GETTING ALL PARTICIPANTS"
